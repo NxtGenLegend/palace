@@ -41,7 +41,7 @@ private:
   Solve(const std::vector<std::unique_ptr<Mesh>> &mesh) const override;
 
   // CUSTOM CONVERGENCE
-  std::unique_ptr<JunctionConvergenceMonitor> junction_monitor;
+  // std::unique_ptr<JunctionConvergenceMonitor> junction_monitor;
 public:
   using BaseSolver::BaseSolver;
 };

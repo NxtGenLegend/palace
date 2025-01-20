@@ -1545,13 +1545,13 @@ void EigenSolverData::SetUp(json &solver)
               "Found an unsupported configuration file keyword under \"Eigenmode\"!\n"
                   << eigenmode->dump(2));
   // CUSTOM CONVERGENCE CLEANUP & VALIDATION
-  // eigenmode->erase("JunctionTol");
-  // eigenmode->erase("JunctionPasses");
-  // eigenmode->erase("JunctionConvergence");
-  // MFEM_VERIFY(junction_tol > 0.0, 
-  //     "config[\"Eigenmode\"][\"JunctionTol\"] must be strictly positive!");
-  // MFEM_VERIFY(required_passes > 0,
-  //     "config[\"Eigenmode\"][\"JunctionPasses\"] must be strictly positive!");
+  eigenmode->erase("JunctionTol");
+  eigenmode->erase("JunctionPasses");
+  eigenmode->erase("JunctionConvergence");
+  MFEM_VERIFY(junction_tol > 0.0, 
+      "config[\"Eigenmode\"][\"JunctionTol\"] must be strictly positive!");
+  MFEM_VERIFY(required_passes > 0,
+      "config[\"Eigenmode\"][\"JunctionPasses\"] must be strictly positive!");
 
 
   // Debug
