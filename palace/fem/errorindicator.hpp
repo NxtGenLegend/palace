@@ -63,20 +63,20 @@ public:
 };
 
 // CUSTOM CONVERGENCE
-// class JunctionConvergenceMonitor {
-// private:
-//     double prev_energy = -1.0;           
-//     int consecutive_passes = 0;           
-//     const int required_passes;            
-//     const double tol;                     
-//     bool reported_junction_count = false; 
+class JunctionConvergenceMonitor {
+private:
+    double prev_energy = -1.0;           
+    int consecutive_passes = 0;           
+    const int required_passes;            
+    const double tol;                     
+    bool reported_junction_count = false; 
 
-// public:
-//     JunctionConvergenceMonitor(double tolerance, int req_passes = 3) 
-//         : required_passes(req_passes), tol(tolerance) {}
+public:
+    JunctionConvergenceMonitor(double tolerance, int req_passes = 3) 
+        : required_passes(req_passes), tol(tolerance) {}
 
-//     bool AddMeasurement(const Vector &field_mag, const SpaceOperator &space_op);
-// };
+    bool AddMeasurement(const Vector &field_mag, const SpaceOperator &space_op);
+};
 
 }  // namespace palace
 

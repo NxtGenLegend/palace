@@ -47,40 +47,40 @@ void ErrorIndicator::AddIndicator(const Vector &indicator)
 }
 
 // CUSTOM CONVERGENCE
-// bool JunctionConvergenceMonitor::AddMeasurement(
-//     const Vector &field_mag, const SpaceOperator &space_op) 
-// {
-//     double current_energy = 0.0;
-//     auto junction_elements = space_op.GetJunctionElements();
+bool JunctionConvergenceMonitor::AddMeasurement(
+    const Vector &field_mag, const SpaceOperator &space_op) 
+{
+    double current_energy = 0.0;
+    auto junction_elements = space_op.GetJunctionElements();
 
-//     if (!reported_junction_count && !junction_elements.empty()) {
-//         Mpi::Print(" Number of junction elements: {}\n", junction_elements.size());
-//         reported_junction_count = true;
-//     }
+    if (!reported_junction_count && !junction_elements.empty()) {
+        Mpi::Print(" Number of junction elements: {}\n", junction_elements.size());
+        reported_junction_count = true;
+    }
 
-//     for(int elem : junction_elements) {
-//         current_energy += std::abs(field_mag[elem] * field_mag[elem]) * 
-//                          space_op.GetMesh().GetElementVolume(elem);
-//     }
+    for(int elem : junction_elements) {
+        current_energy += std::abs(field_mag[elem] * field_mag[elem]) * 
+                         space_op.GetMesh().GetElementVolume(elem);
+    }
 
-//     if (prev_energy < 0) {
-//         prev_energy = current_energy;
-//         return false;
-//     }
+    if (prev_energy < 0) {
+        prev_energy = current_energy;
+        return false;
+    }
 
-//     double change = std::abs((current_energy - prev_energy) / prev_energy);
+    double change = std::abs((current_energy - prev_energy) / prev_energy);
     
-//     Mpi::Print(" Junction energy change: {:.3e}% (needed < {:.3e}%, {} consecutive)\n",
-//                change * 100, tol * 100, consecutive_passes);
+    Mpi::Print(" Junction energy change: {:.3e}% (needed < {:.3e}%, {} consecutive)\n",
+               change * 100, tol * 100, consecutive_passes);
     
-//     if (change < tol) {
-//         consecutive_passes++;
-//     } else {
-//         consecutive_passes = 0;
-//     }
+    if (change < tol) {
+        consecutive_passes++;
+    } else {
+        consecutive_passes = 0;
+    }
 
-//     prev_energy = current_energy;
-//     return consecutive_passes >= required_passes;
-// }
+    prev_energy = current_energy;
+    return consecutive_passes >= required_passes;
+}
 
 }  // namespace palace
