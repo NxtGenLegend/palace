@@ -323,6 +323,27 @@ EigenSolver::Solve(const std::vector<std::unique_ptr<Mesh>> &mesh) const
                 num_conv, E_elec, E_mag,
                 (i == iodata.solver.eigenmode.n - 1) ? &indicator : nullptr);
   }
+  // CUSTOM CONVERGENCE
+  Vector field_mag;
+  linalg::ComputeFieldMagnitude(E, field_mag);
+
+  bool is_converged = freq_error < solver.eigenmode.tol;
+
+  if (iodata.solver.eigenmode.junction_convergence) {
+      if (!junction_monitor) {
+          junction_monitor = std::make_unique<JunctionConvergenceMonitor>(
+              iodata.solver.eigenmode.junction_tol,
+              iodata.solver.eigenmode.required_passes
+          );
+      }
+      is_converged &= junction_monitor->AddMeasurement(field_mag, space_op);
+  }
+
+  if (!is_converged) {
+      i--;
+      continue;
+  }
+  // CUSTOM ENDS
   return {indicator, space_op.GlobalTrueVSize()};
 }
 

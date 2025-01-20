@@ -1523,6 +1523,11 @@ void EigenSolverData::SetUp(json &solver)
   init_v0_const = eigenmode->value("StartVectorConstant", init_v0_const);
   mass_orthog = eigenmode->value("MassOrthogonal", mass_orthog);
 
+  // CUSTOM CONVERGENCE
+  junction_tol = eigenmode->value("JunctionTol", junction_tol);
+  required_passes = eigenmode->value("JunctionPasses", required_passes);
+  junction_convergence = eigenmode->value("JunctionConvergence", junction_convergence);
+
   // Cleanup
   eigenmode->erase("Target");
   eigenmode->erase("Tol");
@@ -1539,6 +1544,15 @@ void EigenSolverData::SetUp(json &solver)
   MFEM_VERIFY(eigenmode->empty(),
               "Found an unsupported configuration file keyword under \"Eigenmode\"!\n"
                   << eigenmode->dump(2));
+  // CUSTOM CONVERGENCE CLEANUP & VALIDATION
+  // eigenmode->erase("JunctionTol");
+  // eigenmode->erase("JunctionPasses");
+  // eigenmode->erase("JunctionConvergence");
+  // MFEM_VERIFY(junction_tol > 0.0, 
+  //     "config[\"Eigenmode\"][\"JunctionTol\"] must be strictly positive!");
+  // MFEM_VERIFY(required_passes > 0,
+  //     "config[\"Eigenmode\"][\"JunctionPasses\"] must be strictly positive!");
+
 
   // Debug
   if constexpr (JSON_DEBUG)

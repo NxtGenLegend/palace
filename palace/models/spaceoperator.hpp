@@ -83,6 +83,10 @@ private:
   bool AddExcitationVector1Internal(Vector &RHS);
   bool AddExcitationVector2Internal(double omega, ComplexVector &RHS);
 
+  // CUSTOM CONVERGENCE
+  // mutable std::vector<int> junction_elements_cache;
+  // mutable bool junction_cache_valid = false;
+
 public:
   SpaceOperator(const IoData &iodata, const std::vector<std::unique_ptr<Mesh>> &mesh);
 
@@ -205,6 +209,11 @@ public:
 
   // Get the associated MPI communicator.
   MPI_Comm GetComm() const { return GetNDSpace().GetComm(); }
+
+  // CUSTOM CONVERGENCE
+  // std::vector<int> GetJunctionElements() const;
+  // double ComputeJunctionFieldEnergy(const Vector &field) const;
+
 };
 
 }  // namespace palace

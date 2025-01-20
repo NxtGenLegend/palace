@@ -48,7 +48,10 @@
       "N": 15,
       "Tol": 1.0e-8,
       "Target": 2.0,  // TE f111 ~ 2.9 GHz
-      "Save": 15
+      "Save": 15, // Custom Convergence
+      "JunctionConvergence": true,
+      "JunctionTol": 0.001,
+      "JunctionPasses": 3
     },
     "Linear":
     {

@@ -714,6 +714,11 @@ public:
   // problems.
   bool pep_linear = true;
 
+  // NEW CRITERIA FOR CONVERGENCE
+  // double junction_tol = 0.001;         // 0.1% tolerance for junction field energy change
+  // int required_passes = 3;             // Required consecutive passes below tolerance  
+  // bool junction_convergence = true;    // Enable junction convergence check
+
   void SetUp(json &solver);
 };
 

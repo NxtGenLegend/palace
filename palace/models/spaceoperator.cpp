@@ -1015,6 +1015,28 @@ void SpaceOperator::GetRandomInitialVector(ComplexVector &v)
   linalg::SetSubVector(v, nd_dbc_tdof_lists.back(), 0.0);
 }
 
+// CUSTOM CONVERGENCE
+// std::vector<int> SpaceOperator::GetJunctionElements() const {
+//     if (!junction_cache_valid) {
+//         junction_elements_cache.clear();
+//         for(int i = 0; i < GetMesh().GetNE(); i++) {
+//             if (mat_op.HasLondonDepth()) {
+//                 junction_elements_cache.push_back(i);
+//             }
+//         }
+//         junction_cache_valid = true;
+//     }
+//     return junction_elements_cache;
+// }
+// double SpaceOperator::ComputeJunctionFieldEnergy(const Vector &field) const {
+//     double energy = 0.0;
+//     for(int elem : GetJunctionElements()) {
+//         energy += std::abs(field[elem] * field[elem]) * 
+//                  GetMesh().GetElementVolume(elem);
+//     }
+//     return energy;
+// }
+
 template std::unique_ptr<Operator>
     SpaceOperator::GetStiffnessMatrix(Operator::DiagonalPolicy);
 template std::unique_ptr<ComplexOperator>
