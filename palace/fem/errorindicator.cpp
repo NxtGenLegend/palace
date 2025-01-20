@@ -4,6 +4,8 @@
 #include "errorindicator.hpp"
 
 #include <mfem/general/forall.hpp>
+// CUSTOM CONVERGENCE
+#include <models/spaceoperator.hpp>
 
 namespace palace
 {

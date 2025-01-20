@@ -8,6 +8,8 @@
 #include <vector>
 #include "linalg/vector.hpp"
 #include "utils/communication.hpp"
+// CUSTOM CONVERGENCE
+#include "models/spaceoperator.hpp"
 
 namespace palace
 {
