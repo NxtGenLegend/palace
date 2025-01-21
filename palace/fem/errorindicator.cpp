@@ -49,20 +49,29 @@ void ErrorIndicator::AddIndicator(const Vector &indicator)
 }
 
 // CUSTOM CONVERGENCE
-bool JunctionConvergenceMonitor::AddMeasurement(
-    const Vector &field_mag, const SpaceOperator &space_op) 
-{
+double JunctionConvergenceMonitor::GetElementVolume(const mfem::ParMesh& mesh, int elem) {
+
+  mfem::ElementTransformation* T = mesh.GetElementTransformation(elem);
+
+  const mfem::IntegrationRule& ir = mfem::IntRules.Get(mesh.GetElementGeometry(elem), 0);
+
+  return T->Weight() * ir.IntPoint(0).weight;
+
+}
+
+bool JunctionConvergenceMonitor::AddMeasurement(const Vector &field_mag, const SpaceOperator &space_op) {
+
     double current_energy = 0.0;
     auto junction_elements = space_op.GetJunctionElements();
-
     if (!reported_junction_count && !junction_elements.empty()) {
         Mpi::Print(" Number of junction elements: {}\n", junction_elements.size());
         reported_junction_count = true;
     }
 
+    const mfem::ParMesh& mesh = space_op.GetMesh();
     for(int elem : junction_elements) {
-        current_energy += std::abs(field_mag[elem] * field_mag[elem]) * 
-                         space_op.GetMesh().GetElementVolume(elem);
+        current_energy += std::abs(field_mag[elem]  field_mag[elem])  
+        GetElementVolume(mesh, elem);
     }
 
     if (prev_energy < 0) {
@@ -71,17 +80,20 @@ bool JunctionConvergenceMonitor::AddMeasurement(
     }
 
     double change = std::abs((current_energy - prev_energy) / prev_energy);
-    
-    Mpi::Print(" Junction energy change: {:.3e}% (needed < {:.3e}%, {} consecutive)\n",
-               change * 100, tol * 100, consecutive_passes);
-    
+    Mpi::Print(" Junction energy change: {:.3e}% (needed < {:.3e}%, {} consecutive)\n", change  100, tol  100, consecutive_passes);
+
     if (change < tol) {
+
         consecutive_passes++;
+
     } else {
+
         consecutive_passes = 0;
+
     }
 
     prev_energy = current_energy;
+
     return consecutive_passes >= required_passes;
 }
 
