@@ -1031,9 +1031,10 @@ std::vector<int> SpaceOperator::GetJunctionElements() const {
 
 double SpaceOperator::ComputeJunctionFieldEnergy(const Vector &field) const {
     double energy = 0.0;
+    const auto& mfem_mesh = GetMesh().Get();
     for(int elem : GetJunctionElements()) {
-        energy += std::abs(field[elem] * field[elem]) * 
-                 GetMesh().GetElementVolume(elem);
+        const double value = field[elem];
+        energy += value * value * mfem_mesh.GetElementVolume(elem);
     }
     return energy;
 }
