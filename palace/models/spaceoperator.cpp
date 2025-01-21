@@ -1042,7 +1042,7 @@ double SpaceOperator::ComputeJunctionFieldEnergy(const Vector &field) const
     // (similar logic to the monitor)
     double energy = 0.0;
     auto junction_elems = GetJunctionElements();
-    auto &mfem_mesh = GetMesh().Get();
+    auto &mfem_mesh = const_cast<mfem::ParMesh&>(GetMesh().Get());
     for (int elem : junction_elems)
     {
         double value = field[elem];
