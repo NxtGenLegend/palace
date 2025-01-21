@@ -82,7 +82,7 @@ public:
     }
 
     // Return true if we've converged
-    bool AddMeasurement(const Vector &field_mag, const SpaceOperator &space_op);
+    bool AddMeasurement(const Vector &field_mag, SpaceOperator &space_op);
 };
 
 }  // namespace palace

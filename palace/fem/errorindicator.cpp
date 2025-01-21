@@ -50,7 +50,7 @@ void ErrorIndicator::AddIndicator(const Vector &indicator)
 
 // CUSTOM CONVERGENCE
 bool JunctionConvergenceMonitor::AddMeasurement(
-    const Vector &field_mag, const SpaceOperator &space_op)
+    const Vector &field_mag, SpaceOperator &space_op)
 {
     // 1) Identify the junction elements from the space operator
     std::vector<int> junction_elems = space_op.GetJunctionElements();
