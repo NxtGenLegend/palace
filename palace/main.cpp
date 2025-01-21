@@ -22,6 +22,8 @@
 #include "utils/iodata.hpp"
 #include "utils/omp.hpp"
 #include "utils/timer.hpp"
+// CUSTOM CONVERGENCE
+#include "drivers/amreigensolver.hpp"
 
 #if defined(MFEM_USE_STRUMPACK)
 #include <StrumpackConfig.hpp>
