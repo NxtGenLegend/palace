@@ -21,7 +21,7 @@ private:
   bool root;
   std::size_t size;
   int num_thread;
-  std::string git_tag;
+  const char *git_tag;
 
 public:
   AMREigenSolver(IoData &iodata, bool root, std::size_t size, int num_thread,
