@@ -50,48 +50,52 @@ void ErrorIndicator::AddIndicator(const Vector &indicator)
 
 // CUSTOM CONVERGENCE
 bool JunctionConvergenceMonitor::AddMeasurement(
-    const Vector &field_mag, SpaceOperator &space_op) 
+    const Vector &field_mag, const SpaceOperator &space_op)
 {
-    double current_energy = 0.0;
-    auto junction_elements = space_op.GetJunctionElements();
+    // 1) Identify the junction elements from the space operator
+    std::vector<int> junction_elems = space_op.GetJunctionElements();
 
-    if (!reported_junction_count && !junction_elements.empty()) {
-        Mpi::Print(" Number of junction elements: {}\n", junction_elements.size());
+    if (!reported_junction_count && !junction_elems.empty())
+    {
+        Mpi::Print(" Number of junction elements: {}\n", junction_elems.size());
         reported_junction_count = true;
     }
 
-    // Get underlying MFEM mesh
-    auto& mfem_mesh = space_op.GetMesh().Get();
-    const mfem::IntegrationRule &ir = 
-        mfem::IntRules.Get(mfem::Geometry::POINT, 0);
-    
-    for(int elem : junction_elements) {
-        const double value = field_mag[elem];
-        mfem::ElementTransformation *T = mfem_mesh.GetElementTransformation(elem);
-        if (T) {
-            T->SetIntPoint(&ir.IntPoint(0));
-            current_energy += value * value * T->Weight();
-        }
+    // 2) Compute "junction energy" by summing |E|^2 * volume of each junction element
+    //    Use mesh.GetElementVolume(elem), which is *const-friendly*.
+    const auto &mfem_mesh = space_op.GetMesh(); // returns a const reference
+    double current_energy = 0.0;
+    for (int elem : junction_elems)
+    {
+        double value = field_mag[elem]; // The field magnitude in that element
+        double volume = mfem_mesh.GetElementVolume(elem);
+        current_energy += (value * value) * volume;
     }
 
-    if (prev_energy < 0) {
+    // 3) First iteration, no previous energy to compare
+    if (prev_energy < 0.0)
+    {
         prev_energy = current_energy;
-        return false;
+        return false; // not converged yet
     }
 
+    // 4) Relative change in junction energy
     double change = std::abs((current_energy - prev_energy) / prev_energy);
-    
-    Mpi::Print(" Junction energy change: {:.3e}% (needed < {:.3e}%, {} consecutive)\n",
+
+    Mpi::Print(" Junction energy change: %.3e%% (need < %.3e%%, %d consecutive)\n",
                change * 100.0, tol * 100.0, consecutive_passes);
-    
-    if (change < tol) {
+
+    if (change < tol)
+    {
         consecutive_passes++;
-    } else {
+    }
+    else
+    {
         consecutive_passes = 0;
     }
 
     prev_energy = current_energy;
-    return consecutive_passes >= required_passes;
+    return (consecutive_passes >= required_passes);
 }
 
 }  // namespace palace

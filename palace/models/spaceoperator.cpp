@@ -23,9 +23,8 @@ namespace palace
 using namespace std::complex_literals;
 
 SpaceOperator::SpaceOperator(const IoData &iodata,
-                             const std::vector<std::unique_ptr<Mesh>> &mesh_vec)
-  : mesh(mesh_vec.back()->Get()),
-    pc_mat_real(iodata.solver.linear.pc_mat_real),
+                             const std::vector<std::unique_ptr<Mesh>> &mesh)
+  : pc_mat_real(iodata.solver.linear.pc_mat_real),
     pc_mat_shifted(iodata.solver.linear.pc_mat_shifted), print_hdr(true),
     print_prec_hdr(true), dbc_attr(SetUpBoundaryProperties(iodata, *mesh.back())),
     nd_fecs(fem::ConstructFECollections<mfem::ND_FECollection>(
@@ -1017,11 +1016,18 @@ void SpaceOperator::GetRandomInitialVector(ComplexVector &v)
 }
 
 // CUSTOM CONVERGENCE
-std::vector<int> SpaceOperator::GetJunctionElements() {
-    if (!junction_cache_valid) {
+std::vector<int> SpaceOperator::GetJunctionElements() const
+{
+    if (!junction_cache_valid)
+    {
         junction_elements_cache.clear();
-        for(int i = 0; i < mesh.GetNE(); i++) {
-            if (mat_op.HasLondonDepth()) {  // Assuming mat_op is your material operator
+        // Suppose we treat any elements with "mat_op.HasLondonDepth()" as junction:
+        // or you may do something more nuanced, e.g. checking attribute IDs
+        for (int i = 0; i < GetMesh().GetNE(); i++)
+        {
+            // If the material at element i is superconducting/junction
+            if (mat_op.HasLondonDepth())
+            {
                 junction_elements_cache.push_back(i);
             }
         }
@@ -1030,22 +1036,22 @@ std::vector<int> SpaceOperator::GetJunctionElements() {
     return junction_elements_cache;
 }
 
-double SpaceOperator::ComputeJunctionFieldEnergy(const Vector &field) {
+double SpaceOperator::ComputeJunctionFieldEnergy(const Vector &field) const
+{
+    // If you want a direct method for computing the junction energy
+    // (similar logic to the monitor)
     double energy = 0.0;
-    auto& mfem_mesh = GetMesh().Get();
-    const mfem::IntegrationRule &ir = 
-        mfem::IntRules.Get(mfem::Geometry::POINT, 0);
-
-    for(int elem : GetJunctionElements()) {
-        const double value = field[elem];
-        mfem::ElementTransformation *T = mfem_mesh.GetElementTransformation(elem);
-        if (T) {
-            T->SetIntPoint(&ir.IntPoint(0));
-            energy += value * value * T->Weight();
-        }
+    auto junction_elems = GetJunctionElements();
+    const auto &mfem_mesh = GetMesh();
+    for (int elem : junction_elems)
+    {
+        double value = field[elem];
+        double volume = mfem_mesh.GetElementVolume(elem);
+        energy += (value * value) * volume;
     }
     return energy;
 }
+
 
 template std::unique_ptr<Operator>
     SpaceOperator::GetStiffnessMatrix(Operator::DiagonalPolicy);

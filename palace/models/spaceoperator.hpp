@@ -86,10 +86,9 @@ private:
   // CUSTOM CONVERGENCE
   mutable std::vector<int> junction_elements_cache;
   mutable bool junction_cache_valid = false;
-  mfem::ParMesh& mesh;
 
 public:
-  SpaceOperator(const IoData &iodata, const std::vector<std::unique_ptr<Mesh>> &mesh_vec);
+  SpaceOperator(const IoData &iodata, const std::vector<std::unique_ptr<Mesh>> &mesh);
 
   // Return list of all PEC boundary true dofs for all finite element space levels.
   const std::vector<mfem::Array<int>> &GetNDDbcTDofLists() const
@@ -214,7 +213,7 @@ public:
   MPI_Comm GetComm() const { return GetNDSpace().GetComm(); }
 
   // CUSTOM CONVERGENCE
-  std::vector<int> GetJunctionElements();
+  std::vector<int> GetJunctionElements() const;
   double ComputeJunctionFieldEnergy(const Vector &field);
 
 };

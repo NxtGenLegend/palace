@@ -65,18 +65,24 @@ public:
 };
 
 // CUSTOM CONVERGENCE
-class JunctionConvergenceMonitor {
+class JunctionConvergenceMonitor
+{
 private:
-    double prev_energy = -1.0;           
-    int consecutive_passes = 0;           
-    const int required_passes;            
-    const double tol;                     
-    bool reported_junction_count = false; 
-public:
-    JunctionConvergenceMonitor(double tolerance, int req_passes = 3) 
-        : required_passes(req_passes), tol(tolerance) {}
+    double prev_energy = -1.0;       // previous iteration's junction energy
+    int consecutive_passes = 0;      // count of consecutive passes
+    const int required_passes;       // how many consecutive passes needed
+    const double tol;                // relative change tolerance
+    bool reported_junction_count = false;
 
-    bool AddMeasurement(const Vector &field_mag, SpaceOperator &space_op);
+public:
+    // Configure with a tolerance and number of consecutive passes
+    JunctionConvergenceMonitor(double tolerance, int req_passes = 3)
+        : required_passes(req_passes), tol(tolerance)
+    {
+    }
+
+    // Return true if we've converged
+    bool AddMeasurement(const Vector &field_mag, const SpaceOperator &space_op);
 };
 
 }  // namespace palace
