@@ -1017,7 +1017,7 @@ void SpaceOperator::GetRandomInitialVector(ComplexVector &v)
 }
 
 // CUSTOM CONVERGENCE
-std::vector<int> SpaceOperator::GetJunctionElements() const {
+std::vector<int> SpaceOperator::GetJunctionElements() {
     if (!junction_cache_valid) {
         junction_elements_cache.clear();
         for(int i = 0; i < mesh.GetNE(); i++) {
