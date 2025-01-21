@@ -111,7 +111,7 @@ AMREigenSolver::Solve(const std::vector<std::unique_ptr<Mesh>> &mesh) const
     //     // pm.Rebalance(); // If in parallel, might want to do it
     //     pm.Finalize();  // finalize
     //   }
-    }
+    //}
   }
 
   // If we exit here, we never got enough passes within max_adapt_its
