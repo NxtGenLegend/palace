@@ -61,9 +61,14 @@ bool JunctionConvergenceMonitor::AddMeasurement(
     }
 
     const auto& mesh = space_op.GetMesh();
+    mfem::ElementTransformation *T = nullptr;
+    mfem::IntegrationPoint ip;
+    
     for(int elem : junction_elements) {
         const double value = field_mag[elem];
-        current_energy += value * value * mesh.GetElementVolume(elem);
+        T = mesh.GetElementTransformation(elem);
+        T->SetIntPoint(&ip);
+        current_energy += value * value * T->Weight();
     }
 
     if (prev_energy < 0) {
