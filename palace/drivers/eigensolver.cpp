@@ -19,14 +19,14 @@
 #include "utils/communication.hpp"
 #include "utils/iodata.hpp"
 #include "utils/timer.hpp"
+#include <tuple>
 
 namespace palace
 {
 
 using namespace std::complex_literals;
 
-std::pair<ErrorIndicator, long long int>
-EigenSolver::Solve(const std::vector<std::unique_ptr<Mesh>> &mesh) const
+std::tuple<ErrorIndicator, long long int, double> EigenSolver::Solve(const std::vector<std::unique_ptr<Mesh>> &mesh) const
 {
   // Construct and extract the system matrices defining the eigenvalue problem. The diagonal
   // values for the mass matrix PEC dof shift the Dirichlet eigenvalues out of the
@@ -283,6 +283,7 @@ EigenSolver::Solve(const std::vector<std::unique_ptr<Mesh>> &mesh) const
     eigen->RescaleEigenvectors(num_conv);
   }
   Mpi::Print("\n");
+  double jenergy = 0.0;
   for (int i = 0; i < num_conv; i++)
   {
     // Get the eigenvalue and relative error.
@@ -324,33 +325,19 @@ EigenSolver::Solve(const std::vector<std::unique_ptr<Mesh>> &mesh) const
                 (i == iodata.solver.eigenmode.n - 1) ? &indicator : nullptr);
     
     // CUSTOM CONVERGENCE
-    // 1) If the user enabled "junction convergence" in the config:
-    if (iodata.solver.eigenmode.junction_convergence)
+    Vector field_mag(E.Size());
+    field_mag.UseDevice(true);
+
+    for (int k = 0; k < E.Size(); k++)
     {
-        // Create the monitor only once (static or persistent):
-        static std::unique_ptr<JunctionConvergenceMonitor> jmon;
-        if (!jmon)
-        {
-            jmon = std::make_unique<JunctionConvergenceMonitor>(
-                iodata.solver.eigenmode.junction_tol,
-                iodata.solver.eigenmode.required_passes);
-        }
+        double re = E.Real()[k];
+        double im = E.Imag()[k];
+        field_mag[k] = std::sqrt(re*re + im*im);
+    }
 
-        // 2) Build a "field magnitude" array from E.
-        Vector field_mag(E.Size());
-        field_mag.UseDevice(true);
-        // If E is truly a ComplexVector with Real() & Imag() parts:
-        for (int k = 0; k < E.Size(); k++)
-        {
-            double re = E.Real()[k];
-            double im = E.Imag()[k];
-            field_mag[k] = std::sqrt(re*re + im*im);
-        }
-
-        // 3) Check the junction-based measure:
-        bool jconv = jmon->AddMeasurement(field_mag, space_op);
-
-        Mpi::Print(" Mode #{} => Junction field energy pass = {}.\n", i + 1, jconv);
+    if (i == 0){
+      Vector field_mag(E.Size());
+      jenergy = space_op.ComputeJunctionFieldEnergy(field_mag);
     }
 
   }
@@ -375,7 +362,7 @@ EigenSolver::Solve(const std::vector<std::unique_ptr<Mesh>> &mesh) const
   //     continue;
   // }
   // CUSTOM ENDS
-  return {indicator, space_op.GlobalTrueVSize()};
+  return {indicator, space_op.GlobalTrueVSize(), jenergy};
 }
 
 void EigenSolver::Postprocess(const PostOperator &post_op,

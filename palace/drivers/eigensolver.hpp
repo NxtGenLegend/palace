@@ -8,6 +8,7 @@
 #include <memory>
 #include <vector>
 #include "drivers/basesolver.hpp"
+#include <tuple>
 
 namespace palace
 {
@@ -37,8 +38,7 @@ private:
   void PostprocessEPR(const PostOperator &post_op, const LumpedPortOperator &lumped_port_op,
                       int i, std::complex<double> omega, double E_m) const;
 
-  std::pair<ErrorIndicator, long long int>
-  Solve(const std::vector<std::unique_ptr<Mesh>> &mesh) const override;
+  std::tuple<ErrorIndicator, long long int, double> Solve(const std::vector<std::unique_ptr<Mesh>> &mesh) const override;
 
   // CUSTOM CONVERGENCE
   // std::unique_ptr<JunctionConvergenceMonitor> junction_monitor;

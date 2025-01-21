@@ -288,7 +288,7 @@ int main(int argc, char *argv[])
         return std::make_unique<DrivenSolver>(iodata, world_root, world_size, omp_threads,
                                               GetPalaceGitTag());
       case config::ProblemData::Type::EIGENMODE:
-        return std::make_unique<EigenSolver>(iodata, world_root, world_size, omp_threads,
+        return std::make_unique<AMREigenSolver>(iodata, world_root, world_size, omp_threads,
                                              GetPalaceGitTag());
       case config::ProblemData::Type::ELECTROSTATIC:
         return std::make_unique<ElectrostaticSolver>(iodata, world_root, world_size,
