@@ -19,7 +19,6 @@
 #include "utils/communication.hpp"
 #include "utils/iodata.hpp"
 #include "utils/timer.hpp"
-#include <tuple>
 
 namespace palace
 {

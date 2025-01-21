@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 #include <tuple>
+#include "drivers/basesolver.hpp"
 
 namespace palace
 {
