@@ -72,8 +72,6 @@ private:
     const int required_passes;            
     const double tol;                     
     bool reported_junction_count = false; 
-    static double GetElementVolume(const mfem::ParMesh& mesh, int elem);
-
 public:
     JunctionConvergenceMonitor(double tolerance, int req_passes = 3) 
         : required_passes(req_passes), tol(tolerance) {}

@@ -49,10 +49,6 @@ void ErrorIndicator::AddIndicator(const Vector &indicator)
 }
 
 // CUSTOM CONVERGENCE
-static double GetElementVolume(const mfem::ParMesh& mesh, int elem) {
-    return mesh.GetElementVolume(elem);  // Using the simpler interface
-}
-
 bool JunctionConvergenceMonitor::AddMeasurement(
     const Vector &field_mag, const SpaceOperator &space_op) 
 {
@@ -67,7 +63,7 @@ bool JunctionConvergenceMonitor::AddMeasurement(
     const auto& mesh = space_op.GetMesh();
     for(int elem : junction_elements) {
         const double value = field_mag[elem];
-        current_energy += value * value * GetElementVolume(mesh, elem);
+        current_energy += value * value * mesh.GetElementVolume(elem);
     }
 
     if (prev_energy < 0) {
