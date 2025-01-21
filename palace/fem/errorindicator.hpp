@@ -62,6 +62,10 @@ public:
 
   // Return the mean local error indicator.
   auto Mean(MPI_Comm comm) const { return linalg::Mean(comm, local); }
+
+  // CUSTOM CONVERGENCE
+  double GetJEnergy() const { return jenergy; }
+  void SetJEnergy(double energy) { jenergy = energy; }
 };
 
 // CUSTOM CONVERGENCE
@@ -84,8 +88,6 @@ public:
 
     // Return true if we've converged
     bool AddMeasurement(const Vector &field_mag, SpaceOperator &space_op);
-    double GetJEnergy() const { return jenergy; }
-    void SetJEnergy(double energy) { jenergy = energy; }
 };
 
 }  // namespace palace

@@ -16,8 +16,8 @@ namespace palace
 {
 
 std::pair<ErrorIndicator, long long int>
-AMREigenSolver(IoData &iodata,
-               std::vector<std::unique_ptr<Mesh>> &mesh)
+AMREigenSolver::Solve(IoData &iodata,
+               std::vector<std::unique_ptr<Mesh>> &mesh) const override
 {
   // We store old frequencies & old junction energies
   // We'll do a simple approach for freq: storing the fundamental freq only
@@ -41,7 +41,7 @@ AMREigenSolver(IoData &iodata,
     Mpi::Print("\n===== EIGEN-AMR Iteration #{} =====\n", iter);
 
     // (1) Solve the eigenproblem
-    EigenSolver solver(iodata);
+    EigenSolver solver(iodata, world_root, world_size, omp_threads, GetPalaceGitTag());
     auto [indicator, vsize] = solver.Solve(mesh); 
     double jenergy = indicator.GetJEnergy();
     final_indicator = indicator;  // store 
@@ -105,8 +105,8 @@ AMREigenSolver(IoData &iodata,
         }
 
         // Now do local refinement
-        pm.Refine(elem_marker);
-        pm.ReorientTetMesh(); 
+        pm.GeneralRefinement(elem_marker);
+        //pm.ReorientTetMesh(); 
         // pm.Rebalance(); // If in parallel, might want to do it
         pm.Finalize();  // finalize
       }
