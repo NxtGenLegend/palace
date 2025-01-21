@@ -86,7 +86,7 @@ private:
   // CUSTOM CONVERGENCE
   mutable std::vector<int> junction_elements_cache;
   mutable bool junction_cache_valid = false;
-  const mfem::ParMesh& mesh;
+  mfem::ParMesh& mesh;
 
 public:
   SpaceOperator(const IoData &iodata, const std::vector<std::unique_ptr<Mesh>> &mesh);
