@@ -81,6 +81,7 @@ public:
   ~Mesh() { ResetCeedObjects(); }
 
   const auto &Get() const { return *mesh; }
+  auto &Get() { return *mesh; }
 
   operator const mfem::ParMesh &() const { return Get(); }
   operator mfem::ParMesh &() { return Get(); }
