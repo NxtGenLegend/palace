@@ -60,13 +60,14 @@ bool JunctionConvergenceMonitor::AddMeasurement(
         reported_junction_count = true;
     }
 
-    const auto& mesh = space_op.GetMesh();
+    // Get the underlying MFEM mesh using palace::Mesh's conversion operator
+    const mfem::ParMesh& mfem_mesh = space_op.GetMesh();
     mfem::ElementTransformation *T = nullptr;
     mfem::IntegrationPoint ip;
     
     for(int elem : junction_elements) {
         const double value = field_mag[elem];
-        T = mesh.GetElementTransformation(elem);
+        T = mfem_mesh.GetElementTransformation(elem);
         T->SetIntPoint(&ip);
         current_energy += value * value * T->Weight();
     }
