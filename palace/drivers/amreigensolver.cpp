@@ -16,8 +16,7 @@ namespace palace
 {
 
 std::pair<ErrorIndicator, long long int>
-AMREigenSolver::Solve(IoData &iodata,
-               std::vector<std::unique_ptr<Mesh>> &mesh) const
+AMREigenSolver::Solve(const std::vector<std::unique_ptr<Mesh>> &mesh) const
 {
   // We store old frequencies & old junction energies
   // We'll do a simple approach for freq: storing the fundamental freq only
