@@ -49,14 +49,11 @@ void ErrorIndicator::AddIndicator(const Vector &indicator)
 }
 
 // CUSTOM CONVERGENCE
-double JunctionConvergenceMonitor::GetElementVolume(const mfem::ParMesh& mesh, int elem) {
-
-  mfem::ElementTransformation* T = mesh.GetElementTransformation(elem);
-
-  const mfem::IntegrationRule& ir = mfem::IntRules.Get(mesh.GetElementGeometry(elem), 0);
-
-  return T->Weight() * ir.IntPoint(0).weight;
-
+static double GetElementVolume(const mfem::ParMesh& mesh, int elem) {
+    const mfem::ElementTransformation* T = mesh.GetElementTransformation(elem);  // Add const
+    const mfem::IntegrationRule& ir = 
+        mfem::IntRules.Get(mesh.GetElementBaseGeometry(elem), 0);  // Use BaseGeometry
+    return T->Weight() * ir.IntPoint(0).weight;
 }
 
 bool JunctionConvergenceMonitor::AddMeasurement(const Vector &field_mag, const SpaceOperator &space_op) {
@@ -70,8 +67,7 @@ bool JunctionConvergenceMonitor::AddMeasurement(const Vector &field_mag, const S
 
     const mfem::ParMesh& mesh = space_op.GetMesh();
     for(int elem : junction_elements) {
-        current_energy += std::abs(field_mag[elem]  field_mag[elem])  
-        GetElementVolume(mesh, elem);
+        current_energy += std::abs(field_mag[elem]  field_mag[elem])*GetElementVolume(mesh, elem);
     }
 
     if (prev_energy < 0) {

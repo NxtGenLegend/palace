@@ -214,7 +214,6 @@ public:
   // CUSTOM CONVERGENCE
   std::vector<int> GetJunctionElements() const;
   double ComputeJunctionFieldEnergy(const Vector &field) const;
-  const mfem::ParMesh& GetMesh() const;
 
 };
 

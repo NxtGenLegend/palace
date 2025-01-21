@@ -1029,10 +1029,6 @@ std::vector<int> SpaceOperator::GetJunctionElements() const {
     return junction_elements_cache;
 }
 
-const mfem::ParMesh& SpaceOperator::GetMesh() const {
-    return mesh;
-}
-
 double SpaceOperator::ComputeJunctionFieldEnergy(const Vector &field) const {
     double energy = 0.0;
     for(int elem : GetJunctionElements()) {
