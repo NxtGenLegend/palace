@@ -64,6 +64,7 @@ public:
   auto Mean(MPI_Comm comm) const { return linalg::Mean(comm, local); }
 
   // CUSTOM CONVERGENCE
+  double jenergy = 0.0;
   double GetJEnergy() const { return jenergy; }
   void SetJEnergy(double energy) { jenergy = energy; }
 };

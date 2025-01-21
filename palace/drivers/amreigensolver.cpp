@@ -41,7 +41,7 @@ AMREigenSolver::Solve(IoData &iodata,
     Mpi::Print("\n===== EIGEN-AMR Iteration #{} =====\n", iter);
 
     // (1) Solve the eigenproblem
-    EigenSolver solver(iodata, world_root, world_size, omp_threads, GetPalaceGitTag());
+    EigenSolver solver(iodata, root, size, num_thread, git_tag);
     auto [indicator, vsize] = solver.Solve(mesh); 
     double jenergy = indicator.GetJEnergy();
     final_indicator = indicator;  // store 

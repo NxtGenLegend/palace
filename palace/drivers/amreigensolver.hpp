@@ -13,7 +13,7 @@ class IoData;
 class Mesh;
 class ErrorIndicator;
 
-class EigenSolver : public BaseSolver
+class AMREigenSolver : public BaseSolver
 {
 public:
 // This driver does repeated solves with local refinement near the junction
