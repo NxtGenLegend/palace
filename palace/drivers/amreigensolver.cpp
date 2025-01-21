@@ -91,7 +91,8 @@ AMREigenSolver::Solve(const std::vector<std::unique_ptr<Mesh>> &mesh) const
       // For each submesh in 'mesh'
       for (auto &msh : mesh)
       {
-        auto &pm = msh->Get(); // returns a non-const mfem::ParMesh & 
+        auto &pm = msh->Get(); // returns a non-const mfem::ParMesh &
+        pm.EnsureNCMesh(); // Ensure that the mesh is non-conforming
         mfem::Array<int> elem_marker(pm.GetNE());
         elem_marker = 0;
 
