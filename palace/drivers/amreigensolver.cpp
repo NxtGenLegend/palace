@@ -42,7 +42,8 @@ AMREigenSolver(IoData &iodata,
 
     // (1) Solve the eigenproblem
     EigenSolver solver(iodata);
-    auto [indicator, vsize, jenergy] = solver.Solve(mesh); 
+    auto [indicator, vsize] = solver.Solve(mesh); 
+    double jenergy = indicator.GetJEnergy();
     final_indicator = indicator;  // store 
     final_vsize = vsize;
 

@@ -73,6 +73,7 @@ private:
     const int required_passes;       // how many consecutive passes needed
     const double tol;                // relative change tolerance
     bool reported_junction_count = false;
+    double jenergy = 0.0;
 
 public:
     // Configure with a tolerance and number of consecutive passes
@@ -83,6 +84,8 @@ public:
 
     // Return true if we've converged
     bool AddMeasurement(const Vector &field_mag, SpaceOperator &space_op);
+    double GetJEnergy() const { return jenergy; }
+    void SetJEnergy(double energy) { jenergy = energy; }
 };
 
 }  // namespace palace
