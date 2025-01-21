@@ -23,7 +23,7 @@ namespace palace
 using namespace std::complex_literals;
 
 SpaceOperator::SpaceOperator(const IoData &iodata,
-                             const std::vector<std::unique_ptr<Mesh>> &mesh)
+                             const std::vector<std::unique_ptr<Mesh>> &mesh_vec)
   : mesh(*mesh_vec.back()->Get()),
     pc_mat_real(iodata.solver.linear.pc_mat_real),
     pc_mat_shifted(iodata.solver.linear.pc_mat_shifted), print_hdr(true),
