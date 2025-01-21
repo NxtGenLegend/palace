@@ -85,32 +85,32 @@ AMREigenSolver::Solve(const std::vector<std::unique_ptr<Mesh>> &mesh) const
     }
 
     // (4) Local refinement near junction if not converged
-    if (iter < max_adapt_its)
-    {
-      Mpi::Print("Local refinement near junction region...\n");
-      // For each submesh in 'mesh'
-      for (auto &msh : mesh)
-      {
-        auto &pm = msh->Get(); // returns a non-const mfem::ParMesh &
-        //pm.EnsureNCMesh(); // Ensure that the mesh is non-conforming
-        mfem::Array<int> elem_marker(pm.GetNE());
-        elem_marker = 0;
+    // if (iter < max_adapt_its)
+    // {
+    //   Mpi::Print("Local refinement near junction region...\n");
+    //   // For each submesh in 'mesh'
+    //   for (auto &msh : mesh)
+    //   {
+    //     auto &pm = msh->Get(); // returns a non-const mfem::ParMesh &
+    //     //pm.EnsureNCMesh(); // Ensure that the mesh is non-conforming
+    //     mfem::Array<int> elem_marker(pm.GetNE());
+    //     elem_marker = 0;
 
-        // Build a temporary SpaceOperator to get the junction elements
-        SpaceOperator tmp_op(iodata, mesh);
-        auto junc_elems = tmp_op.GetJunctionElements();
-        for (int e : junc_elems)
-        {
-          elem_marker[e] = 1; 
-        }
+    //     // Build a temporary SpaceOperator to get the junction elements
+    //     SpaceOperator tmp_op(iodata, mesh);
+    //     auto junc_elems = tmp_op.GetJunctionElements();
+    //     for (int e : junc_elems)
+    //     {
+    //       elem_marker[e] = 1; 
+    //     }
 
-        // Now do local refinement
-        //pm.GeneralRefinement(elem_marker);
-        pm.UniformRefinement();
-        //pm.ReorientTetMesh(); 
-        // pm.Rebalance(); // If in parallel, might want to do it
-        pm.Finalize();  // finalize
-      }
+    //     // Now do local refinement
+    //     //pm.GeneralRefinement(elem_marker);
+    //     pm.UniformRefinement();
+    //     //pm.ReorientTetMesh(); 
+    //     // pm.Rebalance(); // If in parallel, might want to do it
+    //     pm.Finalize();  // finalize
+    //   }
     }
   }
 
