@@ -20,7 +20,7 @@ public:
 // This driver does repeated solves with local refinement near the junction
 // Returns the final (ErrorIndicator, vsize) from the last solve
   std::pair<ErrorIndicator, long long int>
-    Solve(IoData &iodata, std::vector<std::unique_ptr<Mesh>> &mesh) const override;
+    Solve(const std::vector<std::unique_ptr<Mesh>> &mesh) const override;
   using BaseSolver::BaseSolver;
 };
 
