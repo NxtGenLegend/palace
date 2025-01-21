@@ -50,10 +50,7 @@ void ErrorIndicator::AddIndicator(const Vector &indicator)
 
 // CUSTOM CONVERGENCE
 static double GetElementVolume(const mfem::ParMesh& mesh, int elem) {
-    const mfem::FiniteElement* fe = 
-        mesh.GetTransformationFEforGeometry(mesh.GetElementBaseGeometry(elem));
-    const mfem::IntegrationRule& ir = mfem::IntRules.Get(fe->GetGeomType(), fe->GetOrder());
-    return mesh.GetElementVolume(elem, &ir);
+    return mesh.GetElementVolume(elem);  // Using the simpler interface
 }
 
 bool JunctionConvergenceMonitor::AddMeasurement(
