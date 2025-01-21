@@ -8,7 +8,6 @@
 #include <memory>
 #include <vector>
 #include "drivers/basesolver.hpp"
-#include <tuple>
 
 namespace palace
 {
