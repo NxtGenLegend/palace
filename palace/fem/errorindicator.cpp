@@ -50,24 +50,27 @@ void ErrorIndicator::AddIndicator(const Vector &indicator)
 
 // CUSTOM CONVERGENCE
 static double GetElementVolume(const mfem::ParMesh& mesh, int elem) {
-    const mfem::ElementTransformation* T = mesh.GetElementTransformation(elem);  // Add const
-    const mfem::IntegrationRule& ir = 
-        mfem::IntRules.Get(mesh.GetElementBaseGeometry(elem), 0);  // Use BaseGeometry
-    return T->Weight() * ir.IntPoint(0).weight;
+    const mfem::FiniteElement* fe = 
+        mesh.GetTransformationFEforGeometry(mesh.GetElementBaseGeometry(elem));
+    const mfem::IntegrationRule& ir = mfem::IntRules.Get(fe->GetGeomType(), fe->GetOrder());
+    return mesh.GetElementVolume(elem, &ir);
 }
 
-bool JunctionConvergenceMonitor::AddMeasurement(const Vector &field_mag, const SpaceOperator &space_op) {
-
+bool JunctionConvergenceMonitor::AddMeasurement(
+    const Vector &field_mag, const SpaceOperator &space_op) 
+{
     double current_energy = 0.0;
     auto junction_elements = space_op.GetJunctionElements();
+
     if (!reported_junction_count && !junction_elements.empty()) {
         Mpi::Print(" Number of junction elements: {}\n", junction_elements.size());
         reported_junction_count = true;
     }
 
-    const mfem::ParMesh& mesh = space_op.GetMesh();
+    const auto& mesh = space_op.GetMesh();
     for(int elem : junction_elements) {
-        current_energy += std::abs(field_mag[elem]  field_mag[elem])*GetElementVolume(mesh, elem);
+        const double value = field_mag[elem];
+        current_energy += value * value * GetElementVolume(mesh, elem);
     }
 
     if (prev_energy < 0) {
@@ -76,20 +79,17 @@ bool JunctionConvergenceMonitor::AddMeasurement(const Vector &field_mag, const S
     }
 
     double change = std::abs((current_energy - prev_energy) / prev_energy);
-    Mpi::Print(" Junction energy change: {:.3e}% (needed < {:.3e}%, {} consecutive)\n", change  100, tol  100, consecutive_passes);
-
+    
+    Mpi::Print(" Junction energy change: {:.3e}% (needed < {:.3e}%, {} consecutive)\n",
+               change * 100.0, tol * 100.0, consecutive_passes);
+    
     if (change < tol) {
-
         consecutive_passes++;
-
     } else {
-
         consecutive_passes = 0;
-
     }
 
     prev_energy = current_energy;
-
     return consecutive_passes >= required_passes;
 }
 
