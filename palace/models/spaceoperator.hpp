@@ -89,7 +89,7 @@ private:
   mfem::ParMesh& mesh;
 
 public:
-  SpaceOperator(const IoData &iodata, const std::vector<std::unique_ptr<Mesh>> &mesh);
+  SpaceOperator(const IoData &iodata, const std::vector<std::unique_ptr<Mesh>> &meshes_in);
 
   // Return list of all PEC boundary true dofs for all finite element space levels.
   const std::vector<mfem::Array<int>> &GetNDDbcTDofLists() const
@@ -213,7 +213,7 @@ public:
 
   // CUSTOM CONVERGENCE
   std::vector<int> GetJunctionElements() const;
-  double ComputeJunctionFieldEnergy(const Vector &field) const;
+  double ComputeJunctionFieldEnergy(const Vector &field);
 
 };
 

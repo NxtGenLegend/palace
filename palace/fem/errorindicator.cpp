@@ -50,7 +50,7 @@ void ErrorIndicator::AddIndicator(const Vector &indicator)
 
 // CUSTOM CONVERGENCE
 bool JunctionConvergenceMonitor::AddMeasurement(
-    const Vector &field_mag, const SpaceOperator &space_op) 
+    const Vector &field_mag, SpaceOperator &space_op) 
 {
     double current_energy = 0.0;
     auto junction_elements = space_op.GetJunctionElements();
@@ -61,7 +61,7 @@ bool JunctionConvergenceMonitor::AddMeasurement(
     }
 
     // Get underlying MFEM mesh
-    const auto& mfem_mesh = space_op.GetMesh().Get();
+    auto& mfem_mesh = space_op.GetMesh().Get();
     const mfem::IntegrationRule &ir = 
         mfem::IntRules.Get(mfem::Geometry::POINT, 0);
     

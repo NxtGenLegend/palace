@@ -76,7 +76,7 @@ public:
     JunctionConvergenceMonitor(double tolerance, int req_passes = 3) 
         : required_passes(req_passes), tol(tolerance) {}
 
-    bool AddMeasurement(const Vector &field_mag, const SpaceOperator &space_op);
+    bool AddMeasurement(const Vector &field_mag, SpaceOperator &space_op);
 };
 
 }  // namespace palace

@@ -24,7 +24,7 @@ using namespace std::complex_literals;
 
 SpaceOperator::SpaceOperator(const IoData &iodata,
                              const std::vector<std::unique_ptr<Mesh>> &mesh)
-  : mesh(*meshes.back()),
+  : mesh(*meshes_in.back()),
     pc_mat_real(iodata.solver.linear.pc_mat_real),
     pc_mat_shifted(iodata.solver.linear.pc_mat_shifted), print_hdr(true),
     print_prec_hdr(true), dbc_attr(SetUpBoundaryProperties(iodata, *mesh.back())),
@@ -1030,7 +1030,7 @@ std::vector<int> SpaceOperator::GetJunctionElements() const {
     return junction_elements_cache;
 }
 
-double SpaceOperator::ComputeJunctionFieldEnergy(const Vector &field) const {
+double SpaceOperator::ComputeJunctionFieldEnergy(const Vector &field) {
     double energy = 0.0;
     const auto& mfem_mesh = GetMesh().Get();
     const mfem::IntegrationRule &ir = 
