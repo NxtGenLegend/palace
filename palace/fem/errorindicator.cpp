@@ -63,7 +63,7 @@ bool JunctionConvergenceMonitor::AddMeasurement(
 
     // 2) Compute "junction energy" by summing |E|^2 * volume of each junction element
     //    Use mesh.GetElementVolume(elem), which is *const-friendly*.
-    const auto &mfem_mesh = space_op.GetMesh().Get(); // returns a const reference
+    auto &mfem_mesh = space_op.GetMesh().Get(); // returns a const reference
     double current_energy = 0.0;
     for (int elem : junction_elems)
     {
