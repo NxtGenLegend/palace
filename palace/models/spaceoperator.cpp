@@ -1032,7 +1032,7 @@ std::vector<int> SpaceOperator::GetJunctionElements() const {
 
 double SpaceOperator::ComputeJunctionFieldEnergy(const Vector &field) {
     double energy = 0.0;
-    const auto& mfem_mesh = GetMesh().Get();
+    auto& mfem_mesh = GetMesh().Get();
     const mfem::IntegrationRule &ir = 
         mfem::IntRules.Get(mfem::Geometry::POINT, 0);
 

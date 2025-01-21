@@ -136,6 +136,8 @@ public:
 
   // Access the underlying mesh object.
   const auto &GetMesh() const { return GetNDSpace().GetMesh(); }
+  // CUSTOM CONVERGENCE
+  auto &GetMesh() { return GetNDSpace().GetMesh(); }
 
   // Return the number of true (conforming) dofs on the finest ND space.
   auto GlobalTrueVSize() const { return GetNDSpace().GlobalTrueVSize(); }
@@ -212,7 +214,7 @@ public:
   MPI_Comm GetComm() const { return GetNDSpace().GetComm(); }
 
   // CUSTOM CONVERGENCE
-  std::vector<int> GetJunctionElements() const;
+  std::vector<int> GetJunctionElements();
   double ComputeJunctionFieldEnergy(const Vector &field);
 
 };
