@@ -24,7 +24,7 @@ using namespace std::complex_literals;
 
 SpaceOperator::SpaceOperator(const IoData &iodata,
                              const std::vector<std::unique_ptr<Mesh>> &mesh)
-  : mesh(*meshes_in.back()),
+  : mesh(*mesh_vec.back()->Get()),
     pc_mat_real(iodata.solver.linear.pc_mat_real),
     pc_mat_shifted(iodata.solver.linear.pc_mat_shifted), print_hdr(true),
     print_prec_hdr(true), dbc_attr(SetUpBoundaryProperties(iodata, *mesh.back())),
