@@ -60,10 +60,18 @@ bool JunctionConvergenceMonitor::AddMeasurement(
         reported_junction_count = true;
     }
 
+    // Get underlying MFEM mesh
     const auto& mfem_mesh = space_op.GetMesh().Get();
+    const mfem::IntegrationRule &ir = 
+        mfem::IntRules.Get(mfem::Geometry::POINT, 0);
+    
     for(int elem : junction_elements) {
         const double value = field_mag[elem];
-        current_energy += value * value * mfem_mesh.GetElementVolume(elem);
+        mfem::ElementTransformation *T = mfem_mesh.GetElementTransformation(elem);
+        if (T) {
+            T->SetIntPoint(&ir.IntPoint(0));
+            current_energy += value * value * T->Weight();
+        }
     }
 
     if (prev_energy < 0) {
