@@ -92,7 +92,7 @@ AMREigenSolver::Solve(const std::vector<std::unique_ptr<Mesh>> &mesh) const
       for (auto &msh : mesh)
       {
         auto &pm = msh->Get(); // returns a non-const mfem::ParMesh &
-        pm.EnsureNCMesh(); // Ensure that the mesh is non-conforming
+        //pm.EnsureNCMesh(); // Ensure that the mesh is non-conforming
         mfem::Array<int> elem_marker(pm.GetNE());
         elem_marker = 0;
 
@@ -105,7 +105,8 @@ AMREigenSolver::Solve(const std::vector<std::unique_ptr<Mesh>> &mesh) const
         }
 
         // Now do local refinement
-        pm.GeneralRefinement(elem_marker);
+        //pm.GeneralRefinement(elem_marker);
+        pm.UniformRefinement();
         //pm.ReorientTetMesh(); 
         // pm.Rebalance(); // If in parallel, might want to do it
         pm.Finalize();  // finalize
